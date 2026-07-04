@@ -1,0 +1,65 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_TAG = "${BUILD_NUMBER}"
+    }
+
+    stages {
+
+        stage('Checkout to github repo') {
+            steps {
+                git branch: 'main',
+                credentialsId: 'Github_details',
+                url: 'https://github.com/Santhosh107-star/Docker.git'
+            }
+        }
+
+        stage('Build the docker image') {
+            steps {
+                script {
+                    sh '''
+                    echo 'Build docker image'
+                    docker build -t santhosh2025/cicd-e2e:${IMAGE_TAG} .
+                    '''
+                }
+            }
+        }
+
+        stage('Push the docker image') {
+            steps {
+                script {
+                    sh '''
+                    echo 'Push docker image'
+                    docker push santhosh2025/cicd-e2e:${IMAGE_TAG}
+                    '''
+                }
+            }
+        }
+
+        stage('Update the k8 deploy file') {
+          steps {
+            script {
+              withCredentials([usernamePassword(
+                credentialsId: 'GITHUB_CREDENTIALS',
+                passwordVariable: 'GIT_PASSWORD',
+                usernameVariable: 'GIT_USERNAME'
+            )]) {
+
+                sh """
+                sed -i "s|image: santhosh2025/cicd-e2e:.*|image: santhosh2025/cicd-e2e:${IMAGE_TAG}|" k8/deploy.yaml
+
+                git config user.email "jenkins@ci.com"
+                git config user.name "jenkins"
+
+                git add k8/deploy.yaml
+                git commit -m "update deploy yaml file with latest tag ${IMAGE_TAG}" || echo "No changes to commit"
+
+                git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Santhosh107-star/Docker.git HEAD:main
+                """
+                }
+            }
+          }
+        }
+    }
+}

@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pyflask-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: pyflask
+  template:
+    metadata:
+      labels:
+        app: pyflask
+    spec:
+      containers:
+      - name: nginx
+        image: santhosh2025/pyflask-cicd:v1
+        ports:
+        - containerPort: 5000
