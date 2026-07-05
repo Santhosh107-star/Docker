@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: santhosh2025/pyflask-cicd:v1
+        image: santhosh2025/cicd-e2e:18
         ports:
         - containerPort: 5000
