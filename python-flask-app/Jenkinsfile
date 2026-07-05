@@ -28,10 +28,15 @@ pipeline {
 
         stage('Push the docker image') {
             steps {
-                script {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_TOKEN'
+                )]) {
                     sh '''
-                    echo 'Push docker image'
+                    echo "$DOCKER_TOKEN" | docker login -u "$DOCKER_USER" --password-stdin
                     docker push santhosh2025/cicd-e2e:${IMAGE_TAG}
+                    docker logout
                     '''
                 }
             }
