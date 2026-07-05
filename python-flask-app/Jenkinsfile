@@ -47,11 +47,12 @@ pipeline {
             script {
               withCredentials([usernamePassword(
                 credentialsId: 'Github_details',
-                passwordVariable: 'GIT_PASSWORD',
+                passwordVariable: 'GIT_TOKEN',
                 usernameVariable: 'GIT_USERNAME'
             )]) {
 
                 sh '''
+                cat python-flask-app/k8/deploy.yaml
                 sed -i "s|image: santhosh2025/cicd-e2e:.*|image: santhosh2025/cicd-e2e:${IMAGE_TAG}|" python-flask-app/k8/deploy.yaml
 
                 git config user.email "jenkins@ci.com"
@@ -60,7 +61,7 @@ pipeline {
                 git add python-flask-app/k8/deploy.yaml
                 git commit -m "update deploy yaml file with latest tag ${IMAGE_TAG}" || echo "No changes to commit"
 
-                git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Santhosh107-star/Docker.git HEAD:main
+                git push https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/Santhosh107-star/Docker.git HEAD:main
                 '''
                 }
             }
