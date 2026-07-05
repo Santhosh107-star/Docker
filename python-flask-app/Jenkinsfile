@@ -20,7 +20,7 @@ pipeline {
                 script {
                     sh '''
                     echo 'Build docker image'
-                    docker build -t santhosh2025/cicd-e2e:${IMAGE_TAG} -f python-flask-app/Dockerfile .
+                    docker build -t santhosh2025/cicd-e2e:${IMAGE_TAG} -f python-flask-app/Dockerfile python-flask-app
                     '''
                 }
             }
