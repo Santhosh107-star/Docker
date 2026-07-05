@@ -53,7 +53,7 @@ pipeline {
 
                 sh '''
                 cat python-flask-app/k8/deploy.yaml
-                sed -i "s|image: santhosh2025/cicd-e2e:.*|image: santhosh2025/cicd-e2e:${IMAGE_TAG}|" python-flask-app/k8/deploy.yaml
+                sed -i "s|image: .*|image: santhosh2025/cicd-e2e:${IMAGE_TAG}|" python-flask-app/k8/deploy.yaml
 
                 git config user.email "jenkins@ci.com"
                 git config user.name "jenkins"
