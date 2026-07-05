@@ -51,17 +51,17 @@ pipeline {
                 usernameVariable: 'GIT_USERNAME'
             )]) {
 
-                sh """
+                sh '''
                 sed -i "s|image: santhosh2025/cicd-e2e:.*|image: santhosh2025/cicd-e2e:${IMAGE_TAG}|" k8/deploy.yaml
 
                 git config user.email "jenkins@ci.com"
                 git config user.name "jenkins"
 
-                git add k8/deploy.yaml
+                git add python-flask-app/k8/deploy.yaml
                 git commit -m "update deploy yaml file with latest tag ${IMAGE_TAG}" || echo "No changes to commit"
 
                 git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Santhosh107-star/Docker.git HEAD:main
-                """
+                '''
                 }
             }
           }
